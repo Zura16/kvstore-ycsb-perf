@@ -1,5 +1,6 @@
 #include "kvstore/kvstore.h"
 #include <gtest/gtest.h>
+#include <cstdio>   // std::remove
 
 TEST(KVStoreTest, PutGetWorks) {
   kv::KVStore s;
@@ -34,4 +35,27 @@ TEST(KVStoreTest, MissingKeyReturnsNullopt) {
 TEST(KVStoreTest, DeleteMissingKeyReturnsFalse) {
   kv::KVStore s;
   EXPECT_FALSE(s.Del("nope"));
+}
+
+TEST(KVStoreTest, PersistsAndRecoversFromLog) {
+  const std::string path = "kvstore_test.aof";
+  std::remove(path.c_str());
+
+  {
+    kv::KVStore s(path);
+    s.Put("a", "1");
+    s.Put("b", "hello");
+    s.Del("a");
+    s.Close();
+  }
+
+  {
+    kv::KVStore s2(path);
+    EXPECT_FALSE(s2.Get("a").has_value());
+    auto vb = s2.Get("b");
+    ASSERT_TRUE(vb.has_value());
+    EXPECT_EQ(*vb, "hello");
+  }
+
+  std::remove(path.c_str());
 }

@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "kvstore/kvstore.h"
 
 #include <iostream>
@@ -14,7 +15,8 @@ static void PrintHelp() {
 }
 
 int main() {
-  kv::KVStore store;
+  std::filesystem::create_directories("data");
+  kv::KVStore store("data/kv.aof");
   PrintHelp();
 
   std::string line;
