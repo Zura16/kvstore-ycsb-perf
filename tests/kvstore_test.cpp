@@ -1,6 +1,8 @@
 #include "kvstore/kvstore.h"
 #include <gtest/gtest.h>
-#include <cstdio>   // std::remove
+#include <cstdio>
+#include <fstream>
+
 
 TEST(KVStoreTest, PutGetWorks) {
   kv::KVStore s;
@@ -55,6 +57,40 @@ TEST(KVStoreTest, PersistsAndRecoversFromLog) {
     auto vb = s2.Get("b");
     ASSERT_TRUE(vb.has_value());
     EXPECT_EQ(*vb, "hello");
+  }
+
+  std::remove(path.c_str());
+}
+
+TEST(KVStoreTest, RecoveryStopsSafelyOnTruncatedFinalRecord) {
+  const std::string path = "kvstore_trunc_test.aof";
+  std::remove(path.c_str());
+
+  // Write a valid PUT record for key "good"
+  {
+    kv::KVStore s(path);
+    s.Put("good", "ok");
+    s.Close();
+  }
+
+  // Now append a *truncated* PUT record manually (simulate crash mid-write)
+  // We claim value_size=5, but only write 2 bytes ("hi") and NO trailing newline.
+  {
+    std::ofstream out(path, std::ios::binary | std::ios::app);
+    out << "PUT bad 5\n";
+    out.write("hi", 2);
+    out.flush();
+  }
+
+  // Recovery should keep "good" and ignore the partial "bad" record.
+  {
+    kv::KVStore s2(path);
+
+    auto good = s2.Get("good");
+    ASSERT_TRUE(good.has_value());
+    EXPECT_EQ(*good, "ok");
+
+    EXPECT_FALSE(s2.Get("bad").has_value());
   }
 
   std::remove(path.c_str());
