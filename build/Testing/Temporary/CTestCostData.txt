@@ -1,0 +1,6 @@
+KVStoreTest.PutGetWorks 2 0.0673769
+KVStoreTest.DeleteRemovesKey 2 0.022428
+KVStoreTest.OverwriteUpdatesValue 1 0.0375808
+KVStoreTest.MissingKeyReturnsNullopt 1 0.0364652
+KVStoreTest.DeleteMissingKeyReturnsFalse 1 0.0363719
+---

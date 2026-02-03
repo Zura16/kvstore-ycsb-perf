@@ -1,0 +1,138 @@
+Start testing: Feb 02 20:43 PST
+----------------------------------------------------------
+1/5 Testing: KVStoreTest.PutGetWorks
+1/5 Test: KVStoreTest.PutGetWorks
+Command: "/Users/aalindkale/kvstore-ycsb-perf/build/kv_tests" "--gtest_filter=KVStoreTest.PutGetWorks" "--gtest_also_run_disabled_tests"
+Directory: /Users/aalindkale/kvstore-ycsb-perf/build
+"KVStoreTest.PutGetWorks" start time: Feb 02 20:43 PST
+Output:
+----------------------------------------------------------
+Running main() from /Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = KVStoreTest.PutGetWorks
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from KVStoreTest
+[ RUN      ] KVStoreTest.PutGetWorks
+[       OK ] KVStoreTest.PutGetWorks (0 ms)
+[----------] 1 test from KVStoreTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.13 sec
+----------------------------------------------------------
+Test Passed.
+"KVStoreTest.PutGetWorks" end time: Feb 02 20:43 PST
+"KVStoreTest.PutGetWorks" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/5 Testing: KVStoreTest.DeleteRemovesKey
+2/5 Test: KVStoreTest.DeleteRemovesKey
+Command: "/Users/aalindkale/kvstore-ycsb-perf/build/kv_tests" "--gtest_filter=KVStoreTest.DeleteRemovesKey" "--gtest_also_run_disabled_tests"
+Directory: /Users/aalindkale/kvstore-ycsb-perf/build
+"KVStoreTest.DeleteRemovesKey" start time: Feb 02 20:43 PST
+Output:
+----------------------------------------------------------
+Running main() from /Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = KVStoreTest.DeleteRemovesKey
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from KVStoreTest
+[ RUN      ] KVStoreTest.DeleteRemovesKey
+[       OK ] KVStoreTest.DeleteRemovesKey (0 ms)
+[----------] 1 test from KVStoreTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"KVStoreTest.DeleteRemovesKey" end time: Feb 02 20:43 PST
+"KVStoreTest.DeleteRemovesKey" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/5 Testing: KVStoreTest.OverwriteUpdatesValue
+3/5 Test: KVStoreTest.OverwriteUpdatesValue
+Command: "/Users/aalindkale/kvstore-ycsb-perf/build/kv_tests" "--gtest_filter=KVStoreTest.OverwriteUpdatesValue" "--gtest_also_run_disabled_tests"
+Directory: /Users/aalindkale/kvstore-ycsb-perf/build
+"KVStoreTest.OverwriteUpdatesValue" start time: Feb 02 20:43 PST
+Output:
+----------------------------------------------------------
+Running main() from /Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = KVStoreTest.OverwriteUpdatesValue
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from KVStoreTest
+[ RUN      ] KVStoreTest.OverwriteUpdatesValue
+[       OK ] KVStoreTest.OverwriteUpdatesValue (0 ms)
+[----------] 1 test from KVStoreTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"KVStoreTest.OverwriteUpdatesValue" end time: Feb 02 20:43 PST
+"KVStoreTest.OverwriteUpdatesValue" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/5 Testing: KVStoreTest.MissingKeyReturnsNullopt
+4/5 Test: KVStoreTest.MissingKeyReturnsNullopt
+Command: "/Users/aalindkale/kvstore-ycsb-perf/build/kv_tests" "--gtest_filter=KVStoreTest.MissingKeyReturnsNullopt" "--gtest_also_run_disabled_tests"
+Directory: /Users/aalindkale/kvstore-ycsb-perf/build
+"KVStoreTest.MissingKeyReturnsNullopt" start time: Feb 02 20:43 PST
+Output:
+----------------------------------------------------------
+Running main() from /Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = KVStoreTest.MissingKeyReturnsNullopt
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from KVStoreTest
+[ RUN      ] KVStoreTest.MissingKeyReturnsNullopt
+[       OK ] KVStoreTest.MissingKeyReturnsNullopt (0 ms)
+[----------] 1 test from KVStoreTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"KVStoreTest.MissingKeyReturnsNullopt" end time: Feb 02 20:43 PST
+"KVStoreTest.MissingKeyReturnsNullopt" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/5 Testing: KVStoreTest.DeleteMissingKeyReturnsFalse
+5/5 Test: KVStoreTest.DeleteMissingKeyReturnsFalse
+Command: "/Users/aalindkale/kvstore-ycsb-perf/build/kv_tests" "--gtest_filter=KVStoreTest.DeleteMissingKeyReturnsFalse" "--gtest_also_run_disabled_tests"
+Directory: /Users/aalindkale/kvstore-ycsb-perf/build
+"KVStoreTest.DeleteMissingKeyReturnsFalse" start time: Feb 02 20:43 PST
+Output:
+----------------------------------------------------------
+Running main() from /Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = KVStoreTest.DeleteMissingKeyReturnsFalse
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from KVStoreTest
+[ RUN      ] KVStoreTest.DeleteMissingKeyReturnsFalse
+[       OK ] KVStoreTest.DeleteMissingKeyReturnsFalse (0 ms)
+[----------] 1 test from KVStoreTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"KVStoreTest.DeleteMissingKeyReturnsFalse" end time: Feb 02 20:43 PST
+"KVStoreTest.DeleteMissingKeyReturnsFalse" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 02 20:43 PST

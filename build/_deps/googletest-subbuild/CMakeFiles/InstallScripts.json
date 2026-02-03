@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/aalindkale/kvstore-ycsb-perf/build/_deps/googletest-subbuild/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
