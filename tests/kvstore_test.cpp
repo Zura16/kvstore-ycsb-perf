@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <cstdio>
 #include <fstream>
+#include <filesystem>
 
 
 TEST(KVStoreTest, PutGetWorks) {
@@ -95,3 +96,64 @@ TEST(KVStoreTest, RecoveryStopsSafelyOnTruncatedFinalRecord) {
 
   std::remove(path.c_str());
 }
+
+TEST(KVStoreTest, PersistsAndRecoversWithIndex) {
+  const std::string path = "kvstore_index_test.aof";
+  std::remove(path.c_str());
+
+  {
+    kv::KVStore s(path);
+    s.Put("a", "1");
+    s.Put("b", "hello");
+  }
+
+  {
+    kv::KVStore s2(path);
+    auto a = s2.Get("a");
+    ASSERT_TRUE(a.has_value());
+    EXPECT_EQ(*a, "1");
+
+    auto b = s2.Get("b");
+    ASSERT_TRUE(b.has_value());
+    EXPECT_EQ(*b, "hello");
+  }
+
+  std::remove(path.c_str());
+}
+
+TEST(KVStoreTest, CompactionShrinksLogAndKeepsLatestValues) {
+  namespace fs = std::filesystem;
+  const std::string path = "kvstore_compact_test.aof";
+  std::remove(path.c_str());
+
+  kv::KVStore s(path);
+
+  // Create lots of obsolete history
+  for (int i = 0; i < 200; i++) {
+    s.Put("hot", std::to_string(i));
+  }
+  s.Put("keep", "yes");
+  s.Del("keep");
+  s.Put("keep", "final");
+
+  auto before = fs::file_size(path);
+
+  ASSERT_TRUE(s.Compact());
+
+  auto after = fs::file_size(path);
+
+  // Correctness
+  auto hot = s.Get("hot");
+  ASSERT_TRUE(hot.has_value());
+  EXPECT_EQ(*hot, "199");
+
+  auto keep = s.Get("keep");
+  ASSERT_TRUE(keep.has_value());
+  EXPECT_EQ(*keep, "final");
+
+  // File should be smaller after compaction
+  EXPECT_LT(after, before);
+
+  std::remove(path.c_str());
+}
+
