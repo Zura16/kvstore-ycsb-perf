@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <fstream>
 #include <filesystem>
+#include <thread>
+#include <vector>
+#include <atomic>
 
 
 TEST(KVStoreTest, PutGetWorks) {
@@ -157,3 +160,59 @@ TEST(KVStoreTest, CompactionShrinksLogAndKeepsLatestValues) {
   std::remove(path.c_str());
 }
 
+TEST(KVStoreTest, ConcurrentPutsAreThreadSafe) {
+  kv::KVStore s;
+
+  const int kThreads = 8;
+  const int kIters = 5000;
+
+  std::vector<std::thread> threads;
+  threads.reserve(kThreads);
+
+  for (int t = 0; t < kThreads; t++) {
+    threads.emplace_back([&s, t]() {
+      for (int i = 0; i < kIters; i++) {
+        s.Put("hot", std::to_string(t) + ":" + std::to_string(i));
+      }
+    });
+  }
+
+  for (auto& th : threads) th.join();
+
+  auto v = s.Get("hot");
+  ASSERT_TRUE(v.has_value());
+  // Value should be a sane string containing ':'
+  EXPECT_NE(v->find(':'), std::string::npos);
+}
+
+TEST(KVStoreTest, ConcurrentReadsDuringWritesAreSafe) {
+  kv::KVStore s;
+  std::atomic<bool> stop{false};
+
+  std::thread writer([&]() {
+    int i = 0;
+    while (!stop.load()) {
+      s.Put("k", "value_" + std::to_string(i++));
+    }
+  });
+
+  const int kReaders = 6;
+  std::vector<std::thread> readers;
+  readers.reserve(kReaders);
+
+  for (int r = 0; r < kReaders; r++) {
+    readers.emplace_back([&]() {
+      for (int i = 0; i < 20000; i++) {
+        auto v = s.Get("k");
+        if (v) {
+          // If present, it must start with "value_"
+          ASSERT_TRUE(v->rfind("value_", 0) == 0);
+        }
+      }
+    });
+  }
+
+  for (auto& th : readers) th.join();
+  stop.store(true);
+  writer.join();
+}
