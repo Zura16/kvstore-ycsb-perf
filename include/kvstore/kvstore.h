@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <shared_mutex>
-mutable std::shared_mutex mu_;
+
 
 
 namespace kv {
@@ -33,7 +33,7 @@ class KVStore {
  private:
   bool persistence_enabled_ = false;
   std::string log_path_;
-
+  mutable std::shared_mutex mu_;
   std::unordered_map<std::string, Entry> index_;
 
   // persistence

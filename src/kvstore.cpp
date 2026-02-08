@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <shared_mutex>
+
 
 namespace kv {
 
@@ -20,6 +22,8 @@ KVStore::KVStore(const std::string& log_path)
 
 // ---------- Public API ----------
 bool KVStore::Put(const std::string& key, const std::string& value) {
+  std::unique_lock lock(mu_);
+
   if (!persistence_enabled_) {
     Entry e;
     e.in_memory = true;
@@ -39,6 +43,8 @@ bool KVStore::Put(const std::string& key, const std::string& value) {
 }
 
 std::optional<std::string> KVStore::Get(const std::string& key) const {
+  std::shared_lock lock(mu_);
+
   auto it = index_.find(key);
   if (it == index_.end()) return std::nullopt;
 
@@ -50,6 +56,8 @@ std::optional<std::string> KVStore::Get(const std::string& key) const {
 }
 
 bool KVStore::Del(const std::string& key) {
+  std::unique_lock lock(mu_);
+
   bool existed = (index_.erase(key) > 0);
   if (persistence_enabled_) {
     AppendDel(key);  // log deletes even if key missing
@@ -114,6 +122,8 @@ std::optional<std::string> KVStore::ReadValueAt(uint64_t offset, uint64_t size) 
 }
 
 void KVStore::ReplayLog() {
+  std::unique_lock lock(mu_);
+
   index_.clear();
 
   std::ifstream in(log_path_, std::ios::binary);
@@ -169,6 +179,8 @@ void KVStore::ReplayLog() {
 
 // ---------- Compaction ----------
 bool KVStore::Compact() {
+  std::unique_lock lock(mu_);
+
   if (!persistence_enabled_) return true;
 
   namespace fs = std::filesystem;
@@ -187,8 +199,14 @@ bool KVStore::Compact() {
     if (!out) return false;
 
     for (const auto& [key, entry] : index_) {
-      auto v = Get(key);
+      std::optional<std::string> v;
+      if (!persistence_enabled_ || entry.in_memory) {
+        v = entry.cached;
+      } else {
+        v = ReadValueAt(entry.offset, entry.size);
+      }
       if (!v) continue;
+
 
       std::string header = "PUT " + key + " " + std::to_string(v->size());
       out.write(header.data(), static_cast<std::streamsize>(header.size()));
@@ -211,6 +229,9 @@ bool KVStore::Compact() {
   }
 
   // Rebuild index from the compacted log
+  lock.unlock();
+  ReplayLog();
+
   ReplayLog();
   return true;
 }
