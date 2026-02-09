@@ -38,3 +38,6 @@ target_link_libraries(kv_tests PRIVATE kvstore GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(kv_tests)
+
+add_executable(microbench tools/bench/microbench.cpp)
+target_link_libraries(microbench PRIVATE kvstore)
