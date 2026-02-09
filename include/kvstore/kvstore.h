@@ -4,8 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <shared_mutex>
-
-
+#include <fstream>
 
 namespace kv {
 
@@ -35,6 +34,11 @@ class KVStore {
   std::string log_path_;
   mutable std::shared_mutex mu_;
   std::unordered_map<std::string, Entry> index_;
+  std::ofstream log_out_;
+  mutable std::ifstream log_in_;
+
+  bool OpenFiles();
+  void CloseFiles();
 
   // persistence
   bool AppendPut(const std::string& key, const std::string& value, uint64_t* value_offset_out);

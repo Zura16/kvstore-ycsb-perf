@@ -18,6 +18,7 @@ KVStore::KVStore() {
 KVStore::KVStore(const std::string& log_path)
     : persistence_enabled_(true), log_path_(log_path) {
   ReplayLog();
+  OpenFiles();
 }
 
 // ---------- Public API ----------
@@ -66,8 +67,10 @@ bool KVStore::Del(const std::string& key) {
 }
 
 void KVStore::Close() {
-  // No persistent handle kept open yet.
+  if (!persistence_enabled_) return;
+  CloseFiles();
 }
+
 
 // ---------- Persistence helpers ----------
 static void WriteLine(std::ofstream& out, const std::string& s) {
@@ -75,48 +78,78 @@ static void WriteLine(std::ofstream& out, const std::string& s) {
   out.put('\n');
 }
 
-bool KVStore::AppendPut(const std::string& key, const std::string& value, uint64_t* value_offset_out) {
-  std::ofstream out(log_path_, std::ios::binary | std::ios::app);
-  if (!out) return false;
+bool KVStore::OpenFiles() {
+  if (!persistence_enabled_) return true;
 
-  // where are we before writing header?
-  std::streampos record_start = out.tellp();
+  if (!log_out_.is_open()) {
+    log_out_.open(log_path_, std::ios::binary | std::ios::app);
+    if (!log_out_) return false;
+  }
+
+  if (!log_in_.is_open()) {
+    log_in_.open(log_path_, std::ios::binary);
+    if (!log_in_) return false;
+  }
+
+  return true;
+}
+
+void KVStore::CloseFiles() {
+  if (log_out_.is_open()) log_out_.close();
+  if (log_in_.is_open()) log_in_.close();
+}
+
+
+bool KVStore::AppendPut(const std::string& key, const std::string& value, uint64_t* value_offset_out) {
+  if (!OpenFiles()) return false;
+
+  // Ensure we are at end (app mode should already be end, but safe)
+  log_out_.clear();
+  log_out_.seekp(0, std::ios::end);
 
   std::string header = "PUT " + key + " " + std::to_string(value.size());
-  WriteLine(out, header);
+  WriteLine(log_out_, header);
 
-  // value bytes begin right after "header\n"
-  std::streampos value_pos = out.tellp();
+  std::streampos value_pos = log_out_.tellp();
   *value_offset_out = static_cast<uint64_t>(value_pos);
 
-  out.write(value.data(), static_cast<std::streamsize>(value.size()));
-  out.put('\n');
-  out.flush();
+  log_out_.write(value.data(), static_cast<std::streamsize>(value.size()));
+  log_out_.put('\n');
 
-  (void)record_start;
-  return static_cast<bool>(out);
+  // Keep durability simple for now: flush every op (still faster than reopening files)
+  log_out_.flush();
+  return static_cast<bool>(log_out_);
 }
+
 
 bool KVStore::AppendDel(const std::string& key) {
-  std::ofstream out(log_path_, std::ios::binary | std::ios::app);
-  if (!out) return false;
+  if (!OpenFiles()) return false;
 
-  WriteLine(out, "DEL " + key);
-  out.flush();
-  return static_cast<bool>(out);
+  log_out_.clear();
+  log_out_.seekp(0, std::ios::end);
+
+  WriteLine(log_out_, "DEL " + key);
+  log_out_.flush();
+  return static_cast<bool>(log_out_);
 }
 
-std::optional<std::string> KVStore::ReadValueAt(uint64_t offset, uint64_t size) const {
-  std::ifstream in(log_path_, std::ios::binary);
-  if (!in) return std::nullopt;
 
-  in.seekg(static_cast<std::streamoff>(offset), std::ios::beg);
-  if (!in) return std::nullopt;
+std::optional<std::string> KVStore::ReadValueAt(uint64_t offset, uint64_t size) const {
+  if (!persistence_enabled_) return std::nullopt;
+  if (!log_in_.is_open()) {
+    // Open lazily if needed
+    log_in_.open(log_path_, std::ios::binary);
+    if (!log_in_) return std::nullopt;
+  }
+
+  log_in_.clear();
+  log_in_.seekg(static_cast<std::streamoff>(offset), std::ios::beg);
+  if (!log_in_) return std::nullopt;
 
   std::string value;
   value.resize(size);
-  in.read(&value[0], static_cast<std::streamsize>(size));
-  if (in.gcount() != static_cast<std::streamsize>(size)) return std::nullopt;
+  log_in_.read(&value[0], static_cast<std::streamsize>(size));
+  if (log_in_.gcount() != static_cast<std::streamsize>(size)) return std::nullopt;
 
   return value;
 }
@@ -180,6 +213,7 @@ void KVStore::ReplayLog() {
 // ---------- Compaction ----------
 bool KVStore::Compact() {
   std::unique_lock lock(mu_);
+  CloseFiles();
 
   if (!persistence_enabled_) return true;
 
@@ -213,6 +247,8 @@ bool KVStore::Compact() {
       out.put('\n');
       out.write(v->data(), static_cast<std::streamsize>(v->size()));
       out.put('\n');
+    OpenFiles();
+
     }
     out.flush();
     if (!out) return false;
