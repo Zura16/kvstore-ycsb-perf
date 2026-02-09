@@ -1,0 +1,19 @@
+# ninja log v7
+2	1066	1770675357181341219	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o	a38e4e286a25a9c5
+2	1267	1770675357181487511	CMakeFiles/kvserver.dir/src/main.cpp.o	738c05c7a3e975be
+2	1286	1770675357181897178	_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o	e795dde30fd43b8f
+2	1361	1770675357181769303	CMakeFiles/microbench.dir/tools/bench/microbench.cpp.o	2e97d9e90da29d41
+1	1738	1770675357181030219	CMakeFiles/kvstore.dir/src/kvstore.cpp.o	b0592cb5fb09ecac
+1738	1823	1770675358917276969	libkvstore.a	4bd15742a25bdbb3
+1823	1894	1770675359002754636	microbench	5a41687da7cfa8b2
+1823	1895	1770675359002397303	kvserver	301abf2981d713da
+2	2059	1770675357181627303	CMakeFiles/kv_tests.dir/tests/kvstore_test.cpp.o	3609f4e773b42a7
+2	3493	1770675357181168386	_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o	e6157d2d648fe413
+1	8161	1770675357180817261	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o	fc9eff5b34d8cda4
+8161	8245	1770675365341079094	lib/libgtest.a	38aefa2c5f83310
+8245	8286	1770675365424730928	lib/libgtest_main.a	2fc6f460164925a8
+8245	8294	1770675365424534928	lib/libgmock.a	cfd1235c984bcb0d
+8294	8335	1770675365473334761	lib/libgmock_main.a	ed294e13748ec368
+8286	9436	1770675366614648386	kv_tests	b86fe42f94eb2e0e
+8286	9436	1770675366614648386	kv_tests[1]_tests.cmake	b86fe42f94eb2e0e
+8286	9436	1770675366614648386	/Users/aalindkale/kvstore-ycsb-perf/build-release/kv_tests[1]_tests.cmake	b86fe42f94eb2e0e

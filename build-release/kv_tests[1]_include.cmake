@@ -1,0 +1,5 @@
+if(EXISTS "/Users/aalindkale/kvstore-ycsb-perf/build-release/kv_tests[1]_tests.cmake")
+  include("/Users/aalindkale/kvstore-ycsb-perf/build-release/kv_tests[1]_tests.cmake")
+else()
+  add_test(kv_tests_NOT_BUILT kv_tests_NOT_BUILT)
+endif()
