@@ -20,3 +20,31 @@ Record results below.
 |------|------|-----|------------|------------|--------------------|----------|----------|----------|
 | in-memory |  |  |  |  |  |  |  |  |
 | persistent |  |  |  |  |  |  |  |  |
+
+## HTTP Load Test (hey)
+
+Environment:
+- Machine: (fill)
+- OS: (fill)
+- Build: (Debug or Release)  <-- important
+- Server: kv_http_server (cpp-httplib)
+
+### PUT (20k req, concurrency 50)
+Command:
+- hey -n 20000 -c 50 -m POST -d "1234567890" "http://127.0.0.1:8080/put?key=a"
+
+Results:
+- RPS: 40760.84
+- p50: 0.4 ms, p95: 2.2 ms, p99: 9.4 ms
+- slowest: 97.7 ms
+- status: 200/20000
+
+### GET (20k req, concurrency 50)
+Command:
+- hey -n 20000 -c 50 "http://127.0.0.1:8080/get?key=a"
+
+Results:
+- RPS: 54054.74
+- p50: 0.4 ms, p95: 1.4 ms, p99: 6.3 ms
+- slowest: 67.5 ms
+- status: 200/20000

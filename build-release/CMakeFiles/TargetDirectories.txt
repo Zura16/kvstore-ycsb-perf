@@ -2,6 +2,7 @@
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/kvserver.dir
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/kv_tests.dir
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/microbench.dir
+/Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/kv_http_server.dir
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/test.dir
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/edit_cache.dir
 /Users/aalindkale/kvstore-ycsb-perf/build-release/CMakeFiles/rebuild_cache.dir

@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -36,6 +37,7 @@ class KVStore {
   std::unordered_map<std::string, Entry> index_;
   std::ofstream log_out_;
   mutable std::ifstream log_in_;
+  mutable std::mutex io_mu_;
 
   bool OpenFiles();
   void CloseFiles();

@@ -135,9 +135,10 @@ bool KVStore::AppendDel(const std::string& key) {
 
 
 std::optional<std::string> KVStore::ReadValueAt(uint64_t offset, uint64_t size) const {
+  std::lock_guard<std::mutex> io_lock(io_mu_);
+
   if (!persistence_enabled_) return std::nullopt;
   if (!log_in_.is_open()) {
-    // Open lazily if needed
     log_in_.open(log_path_, std::ios::binary);
     if (!log_in_) return std::nullopt;
   }
