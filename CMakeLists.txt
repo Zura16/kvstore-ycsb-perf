@@ -41,3 +41,7 @@ gtest_discover_tests(kv_tests)
 
 add_executable(microbench tools/bench/microbench.cpp)
 target_link_libraries(microbench PRIVATE kvstore)
+
+add_executable(kv_http_server src/http_server.cpp)
+target_include_directories(kv_http_server PRIVATE third_party)
+target_link_libraries(kv_http_server PRIVATE kvstore)
