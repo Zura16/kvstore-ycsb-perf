@@ -85,3 +85,23 @@ Results:
 - throughput: 5272.51 ops/sec
 - latency (ms): avg 7.4785, p50 5.6924, p95 12.9924, p99 35.9789
 - ok=20000, err=0
+
+## Sync Policy Experiment (durability vs performance)
+
+Config: base=http://127.0.0.1:8081, nkeys=10000, ops=20000, concurrency=50, value_size=64B
+
+| Workload | read_ratio | sync_every | throughput (ops/s) | avg (ms) | p50 (ms) | p95 (ms) | p99 (ms) | ok/err |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| A | 0.5 | 1 | 6363.83 | 7.5895 | 6.2481 | 14.0794 | 38.0001 | 20000/0 |
+| A | 0.5 | 100 | 5752.89 | 8.4642 | 7.2915 | 16.1942 | 30.0446 | 20000/0 |
+| W | 0.1 | 1 | 4461.29 | 7.8950 | 4.5947 | 15.9883 | 65.6225 | 20000/0 |
+| W | 0.1 | 100 | (run) | (run) | (run) | (run) | (run) | (run) |
+
+## Sync Policy Experiment (durability vs performance)
+
+Config: base=http://127.0.0.1:8081, nkeys=10000, ops=20000, concurrency=50, value_size=64B, driver=tools/bench/http_workload.py
+
+| Workload | read_ratio | sync_every | throughput (ops/s) | avg (ms) | p50 (ms) | p95 (ms) | p99 (ms) | ok/err |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| W (write-heavy) | 0.1 | 1 | 4461.29 | 7.8950 | 4.5947 | 15.9883 | 65.6225 | 20000/0 |
+| W (write-heavy) | 0.1 | 100 | 6297.00 | 7.6243 | 6.3008 | 13.9955 | 38.3852 | 20000/0 |
